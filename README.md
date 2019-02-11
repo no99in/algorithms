@@ -1,2 +1,7 @@
-# algorithms
-算法之路 My way of algorithms  
+
+**算法之路 My way of algorithms 4 Java-JDK-1.6**
+
+此目录是基于 Java 1.6 版本设计的算法，所有算法均在我的电脑上测试通过。
+
+本项目旨在告诉大家一些 Java 1.6 的一些特性，以及如何在竞赛中使用形同的代码，拿到最好的成绩。
+
