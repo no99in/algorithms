@@ -26,13 +26,21 @@ public class Main {
 			Deque<Vector<Bucket>> dist) {
 
 		for (Vector<Bucket> state : dist) {
+			int flg = 0;
 			for (int i = 0; i < 3; i++) {
-				if (state.get(i).water == curState.get(i).water) {
-					return true;
+
+				if (state.get(i).water != curState.get(i).water) {
+					flg = 1;
 				}
+
+			}
+			if (flg == 1) {
+				continue;
+			} else {
+				return false;
 			}
 		}
-		return false;
+		return true;
 	}
 
 	public static void deeoFirstSearch(Deque<Vector<Bucket>> dist,
@@ -51,25 +59,30 @@ public class Main {
 
 		for (Action curAct : act) {
 			if (isCanDoState(curState, curAct)) {
-				if (isDoState(curState, dist)) {
+				Vector<Bucket> newState = new Vector<Bucket>();
+				try {
+					newState.addElement((Bucket) curState.get(0).clone());
+					newState.addElement((Bucket) curState.get(1).clone());
+					newState.addElement((Bucket) curState.get(2).clone());
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
 
-					Vector<Bucket> newState = (Vector<Bucket>) curState.clone();
-					int rest = newState.get(curAct.to).capicity
-							- newState.get(curAct.to).water;
+				int rest = newState.get(curAct.to).capicity
+						- newState.get(curAct.to).water;
 
-					if (newState.get(curAct.from).water <= rest) {
-						newState.get(curAct.to).water += newState
-								.get(curAct.from).water;
-						newState.get(curAct.from).water = 0;
-					} else {
-						newState.get(curAct.to).water = newState.get(curAct.to).capicity;
-						newState.get(curAct.from).water -= rest;
-					}
+				if (newState.get(curAct.from).water <= rest) {
+					newState.get(curAct.to).water += newState.get(curAct.from).water;
+					newState.get(curAct.from).water = 0;
+				} else {
+					newState.get(curAct.to).water = newState.get(curAct.to).capicity;
+					newState.get(curAct.from).water -= rest;
+				}
 
+				if (isDoState(newState, dist)) {
 					dist.offerLast(newState);
 					deeoFirstSearch(dist, act);
 					dist.pollLast();
-
 				}
 			}
 		}
@@ -92,6 +105,7 @@ public class Main {
 		act.addElement(new Action(2, 0));
 		act.addElement(new Action(2, 1));
 
+		// 深度
 		Deque<Vector<Bucket>> dist = new LinkedList<Vector<Bucket>>();
 		dist.offerFirst(state);
 		deeoFirstSearch(dist, act);
@@ -113,7 +127,7 @@ class Action {
 
 }
 
-class Bucket {
+class Bucket implements Cloneable {
 
 	int water;
 	int capicity;
@@ -122,6 +136,11 @@ class Bucket {
 		super();
 		this.water = water;
 		this.capicity = capicity;
+	}
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 
 }
